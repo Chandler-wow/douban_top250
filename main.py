@@ -3,7 +3,6 @@ import random
 import os
 from utils import util, scrape
 
-# TODO: 尝试多进程实现
 if __name__ == "__main__":
 
     if not os.path.exists(util.PATH_ASSETS):

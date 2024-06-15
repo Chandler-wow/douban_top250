@@ -36,7 +36,6 @@ def get_one_page(start, f):
             ),
         )
         download.start()
-        download.join()
         # util.download_img(pic.em.string, img_src)
         # l1[info]
         hd = info.find(attrs={"class": "hd"})
@@ -72,4 +71,5 @@ def get_one_page(start, f):
         quote = bd.find(attrs={"class": "quote"})
         line.append((quote.text.strip() if quote is not None else ""))  # 14-名句
         f.write(",".join(line) + "\n")
+        download.join()
         time.sleep(2)
