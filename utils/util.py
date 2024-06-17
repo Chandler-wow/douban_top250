@@ -1,6 +1,12 @@
 import os
 import requests
+import threading
 from datetime import datetime
+
+REQUEST_URL = "https://movie.douban.com/top250?start={start}&filter="
+REQUEST_HEADERES = {
+    "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36"
+}
 
 PATH_ASSETS = "./assets"
 PATH_IMG = PATH_ASSETS + "/img"
@@ -41,14 +47,27 @@ INSERT INTO douban_250 VALUES
 
 
 def download_img(seq, url):
+
+    thread = threading.Thread(
+        target=download,
+        args=(
+            seq,
+            url,
+        ),
+    )
+    thread.start()
+    return thread
+
+
+def download(seq, url):
     if not os.path.exists(PATH_IMG):
         os.mkdir(PATH_IMG)
-    with open(f"{PATH_IMG}/movie_{seq.rjust(3,'0')}_img.jpg", "wb") as img:
+    with open(f"{PATH_IMG}/movie_{'%03d'%seq}_img.jpg", "wb") as img:
         img.write(requests.get(url).content)
 
 
 def insert_sql(cursor, map):
-    date = datetime.now().strftime("%Y%m%d")
+    date = datetime.now().strftime("%Y")
     sql = SQL_INSERT.format(
         date=date,
         rk=map["rk"],
@@ -67,3 +86,11 @@ def insert_sql(cursor, map):
         quote=map["quote"].replace("'", "\\'").replace('"', '\\"'),
     )
     cursor.execute(sql)
+
+
+def store_line(method, s, line):
+    if method == "file":
+        # python3.6后，dict的values顺序是插入顺序
+        s.write(",".join(map(lambda v: str(v), line.values())) + "\n")
+    elif method == "mysql":
+        insert_sql(s, line)
