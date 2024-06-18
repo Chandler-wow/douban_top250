@@ -39,9 +39,9 @@ def get_one_page(start, store_method, s, download):
             first_line[2].strip().split(" ")[0].strip() if len(first_line) >= 3 else ""
         )  # 7-主演
         second_line = splits[1].split("/")
-        line["release_date"] = second_line[0].strip()  # 8-上映日期
-        line["release_countries"] = second_line[1].strip()  # 9-上映国家
-        line["type"] = second_line[2].strip()  # 10-影片类型
+        line["release_date"] = second_line[0].strip()[:4]  # 8-上映日期
+        line["release_countries"] = second_line[-2].strip()  # 9-上映国家
+        line["type"] = second_line[-1].strip()  # 10-影片类型
         star_spans = bd.find(attrs={"class": "star"}).find_all("span")
         star = star_spans[0]["class"][0]
         line["star"] = float(

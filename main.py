@@ -10,7 +10,7 @@ from tqdm import tqdm
 if __name__ == "__main__":
 
     args = sys.argv
-    store_method = args[1] if len(args) >= 2 else "mysql"
+    store_method = args[1] if len(args) >= 2 else "file"
     download = bool(args[2]) if len(args) >= 3 else False
     print(
         """
